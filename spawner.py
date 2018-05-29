@@ -1,4 +1,5 @@
 import gevent
+import logging
 
 class Spawner(object):
     def __init__(self, site):
