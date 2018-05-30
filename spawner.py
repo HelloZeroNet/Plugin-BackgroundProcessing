@@ -2,7 +2,7 @@ import gevent
 import logging
 import os
 import importlib
-import sandboxer
+from sandboxer import Sandboxer
 
 class Spawner(object):
     def __init__(self, site):
@@ -27,9 +27,10 @@ class Spawner(object):
             return False
 
         # Sandbox
-        safe_code = sandboxer.sandbox(code)
+        sandboxer = Sandboxer(code, ext)
+        safe_code = sandboxer.toSafe()
 
-        self.threads.append(gevent.spawn(self, safe_code))
+        self.threads.append(gevent.spawn(safe_code))
 
 
     def findTranspiler(self, ext):
