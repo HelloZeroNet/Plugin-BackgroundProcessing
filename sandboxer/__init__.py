@@ -1,5 +1,4 @@
 import ast
-import random
 import runtime
 
 class Sandboxer(object):
@@ -10,7 +9,6 @@ class Sandboxer(object):
 
 
     def toSafe(self):
-        self.stuff_root = "_stuff_%s_" % (random.randint(0, 1000000))
         self.handleNode(self.parsed, None, 0)
         ast.fix_missing_locations(self.parsed)
 
