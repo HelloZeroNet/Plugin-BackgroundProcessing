@@ -23,7 +23,7 @@ class Sandboxer(object):
         # Scope variables
         if isinstance(node, ast.Name) and not isinstance(node.ctx, ast.Param):
             return ast.Subscript(
-                value=ast.Name(id="scope%s" % scope, ctx=node.ctx),
+                value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
                 slice=ast.Index(value=ast.Str(s=node.id)),
                 ctx=node.ctx
             )
@@ -48,15 +48,16 @@ class Sandboxer(object):
 
         # Import
         if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
+            none = ast.Name(id="None", ctx=ast.Load())
+
             names = ast.List(elts=[
                 ast.Tuple(elts=[
                     ast.Str(s=name.name),
-                    ast.Str(s=name.asname)
+                    ast.Str(s=name.asname) if name.asname else none
                 ], ctx=ast.Load())
                 for name in node.names
             ], ctx=ast.Load())
 
-            none = ast.Name(id="None", ctx=ast.Load())
             if isinstance(node, ast.ImportFrom):
                 from_ = ast.Str(node.module) if node.module else none
                 level = ast.Num(node.level or 0)
@@ -114,33 +115,33 @@ class Sandboxer(object):
             for arg in node.args.args:
                 node.body.insert(1, ast.Assign(
                     targets=[ast.Subscript(
-                        value=ast.Name(id="scope%s" % scope, ctx=arg.ctx),
+                        value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
                         slice=ast.Index(value=ast.Str(s=arg.id)),
-                        ctx=arg.ctx
+                        ctx=ast.Store()
                     )],
-                    value=ast.Name(id=arg.id, ctx=arg.ctx)
+                    value=ast.Name(id=arg.id, ctx=ast.Load())
                 ))
 
             # Vararg
             if node.args.vararg is not None:
                 node.body.insert(1, ast.Assign(
                     targets=[ast.Subscript(
-                        value=ast.Name(id="scope%s" % scope, ctx=arg.ctx),
+                        value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
                         slice=ast.Index(value=ast.Str(s=node.args.vararg)),
-                        ctx=arg.ctx
+                        ctx=ast.Store()
                     )],
-                    value=ast.Name(id=node.args.vararg, ctx=arg.ctx)
+                    value=ast.Name(id=node.args.vararg, ctx=ast.Load())
                 ))
 
             # Kwarg
             if node.args.kwarg is not None:
                 node.body.insert(1, ast.Assign(
                     targets=[ast.Subscript(
-                        value=ast.Name(id="scope%s" % scope, ctx=arg.ctx),
+                        value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
                         slice=ast.Index(value=ast.Str(s=node.args.kwarg)),
-                        ctx=arg.ctx
+                        ctx=ast.Store()
                     )],
-                    value=ast.Name(id=node.args.kwarg, ctx=arg.ctx)
+                    value=ast.Name(id=node.args.kwarg, ctx=ast.Load())
                 ))
 
 
