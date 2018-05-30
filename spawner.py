@@ -2,6 +2,7 @@ import gevent
 import logging
 import os
 import importlib
+import sandboxer
 
 class Spawner(object):
     def __init__(self, site):
@@ -26,7 +27,7 @@ class Spawner(object):
             return False
 
         # Sandbox
-        safe_code = self.sandbox(code)
+        safe_code = sandboxer.sandbox(code)
 
         self.threads.append(gevent.spawn(self, safe_code))
 
@@ -36,9 +37,6 @@ class Spawner(object):
             return importlib.import_module("transpilers.%s" % ext)
         except ImportError, e:
             return None
-
-    def sandbox(self, code):
-        raise NotImplementedError
 
 
     # Stop all threads
