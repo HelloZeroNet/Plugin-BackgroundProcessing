@@ -26,3 +26,11 @@ class Scope(object):
 
     def __setitem__(self, name, value):
         self.vars[name] = value
+
+
+
+# Fill scope (usually scope0) with default variables
+def populateScope(scope):
+    import exceptions
+    for name in vars(exceptions):
+        scope[name] = getattr(exceptions, name)

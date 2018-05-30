@@ -17,6 +17,7 @@ class Sandboxer(object):
         filename = "0background.%s" % self.ext
         def do():
             scope0 = runtime.Scope()
+            runtime.populateScope(scope0)
             exec compile(self.parsed, filename=filename, mode="exec") in {"scope0": scope0}
         return do
 
