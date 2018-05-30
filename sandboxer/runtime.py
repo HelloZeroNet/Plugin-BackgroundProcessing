@@ -5,17 +5,19 @@ from vmbuiltins import setBuiltins
 
 # Return scope-before-scope0
 def fillScope0(scope0):
+    scope0.inherits = {}
+
     # Exceptions
     import exceptions
     for name in vars(exceptions):
-        scope0[name] = getattr(exceptions, name)
+        scope0.inherits[name] = getattr(exceptions, name)
 
     # Built-in constants
-    scope0["False"] = False
-    scope0["True"] = True
-    scope0["None"] = None
-    scope0["NotImplemented"] = NotImplemented
-    scope0["Ellipsis"] = Ellipsis
+    scope0.inherits["False"] = False
+    scope0.inherits["True"] = True
+    scope0.inherits["None"] = None
+    scope0.inherits["NotImplemented"] = NotImplemented
+    scope0.inherits["Ellipsis"] = Ellipsis
 
     # Types
     types = [
@@ -24,7 +26,7 @@ def fillScope0(scope0):
         "reversed", "str", "int", "complex", "bool", "buffer", "object",
     ]
     for type_name in types:
-        scope0[type_name] = eval(type_name)  # Couldn't find a better way
+        scope0.inherits[type_name] = eval(type_name)  # Couldn't find a better way
 
     # Secure default functions
     funcs = [
@@ -36,7 +38,7 @@ def fillScope0(scope0):
         "min", "any", "map", "max", "callable", "classmethod"
     ]
     for func_name in funcs:
-        scope0[func_name] = eval(func_name)  # Couldn't find a better way
+        scope0.inherits[func_name] = eval(func_name)  # Couldn't find a better way
 
     # Now add more builtins
     setBuiltins(scope0)

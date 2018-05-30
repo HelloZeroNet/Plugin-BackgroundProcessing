@@ -34,7 +34,10 @@ class Scope(object):
 
 
         if self.inherits is not None:
-            return self.inherits[name] # Recursive: type(inherits)==Scope
+            if isinstance(self.inherits, Scope):
+                return self.inherits[name] # Recursive: type(inherits)==Scope
+            elif name in self.inherits:
+                return self.inherits[name]
 
         raise NameError(name)
 
