@@ -16,4 +16,7 @@ def setBuiltins(scope0):
 		return scope0["locals"]()
 	scope0.inherits["globals"] = globals
 
-	#arr = ['input', 'reload', 'print', 'open', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']
+	def reload():
+		raise NotImplementedError("reload() is not supported")
+
+	#arr = ['input', 'print', 'open', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']
