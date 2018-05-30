@@ -97,6 +97,7 @@ class Sandboxer(object):
                 ))
 
 
+        # Save functions (not methods) to scope
         if isinstance(node, ast.FunctionDef) and not isinstance(parent, ast.ClassDef):
             oldname = node.name
             node.name = "_user_%s_%s_" % (oldname, scope)
@@ -106,6 +107,23 @@ class Sandboxer(object):
                 ast.Assign(
                     targets=[ast.Subscript(
                         value=ast.Name(id="scope%s" % (scope-1), ctx=ast.Load()),
+                        slice=ast.Index(value=ast.Str(s=oldname)),
+                        ctx=ast.Store()
+                    )],
+                    value=ast.Name(id=node.name, ctx=ast.Load())
+                )
+            ]
+
+        # Save classes to scope
+        if isinstance(node, ast.ClassDef) and not isinstance(parent, ast.ClassDef):
+            oldname = node.name
+            node.name = "_user_%s_%s_" % (oldname, scope)
+
+            return [
+                node,
+                ast.Assign(
+                    targets=[ast.Subscript(
+                        value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
                         slice=ast.Index(value=ast.Str(s=oldname)),
                         ctx=ast.Store()
                     )],
