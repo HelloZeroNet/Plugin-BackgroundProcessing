@@ -3,8 +3,10 @@ from scope import Scope
 from vmbuiltins import getBuiltins
 
 
-# Fill scope (usually scope0) with default variables
-def populateScope(scope):
+# Return scope-before-scope0
+def getRootScope():
+    scope = {}
+
     # Exceptions
     import exceptions
     for name in vars(exceptions):
@@ -39,5 +41,6 @@ def populateScope(scope):
         scope[func_name] = eval(func_name)  # Couldn't find a better way
 
     # Now add more builtins
-    for name, value in getBuiltins(scope).iteritems():
-        scope[name] = value
+    scope.update(getBuiltins(scope))
+
+    return scope
