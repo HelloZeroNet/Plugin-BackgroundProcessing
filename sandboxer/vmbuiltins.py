@@ -12,14 +12,17 @@ def setBuiltins(scope0):
     scope0.inherits["__doc__"]     = ""
     scope0.inherits["__debug__"]   = False
 
+    # globals()
     def globals():
         return scope0["locals"]()
     scope0.inherits["globals"] = globals
 
+    # reload()
     def reload():
         raise NotImplementedError("reload() is not supported")
     scope0.inherits["reload"] = reload
 
+    # print and print()
     def print_(*args, **kwargs):
         nl = kwargs["nl"]
         dest = kwargs["dest"]
@@ -32,4 +35,11 @@ def setBuiltins(scope0):
 
     scope0.inherits["print"] = print_
 
-    #arr = ['input', 'print', 'open', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']
+    # input() and raw_input()
+    def input_(prompt=None):
+        return scope0.io["input"](prompt)
+
+    scope0.inherits["input"] = input_
+    scope0.inherits["raw_input"] = input_
+
+    #arr = ['open', 'compile', '__import__', 'file', 'execfile', 'eval']
