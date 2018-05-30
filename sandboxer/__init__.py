@@ -28,6 +28,25 @@ class Sandboxer(object):
                 ctx=node.ctx
             )
 
+        # Global
+        if isinstance(node, ast.Global):
+            res = []
+            for name in node.names:
+                res.append(ast.Expr(value=ast.Call(
+                    func=ast.Attribute(
+                        value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
+                        attr="inheritVariable",
+                        ctx=ast.Load()
+                    ),
+                    args=[
+                        ast.Name(id="scope0", ctx=ast.Load()),
+                        ast.Str(s=name)
+                    ],
+                    keywords=[], starargs=None, kwargs=None
+                )))
+            return res
+
+
         if isinstance(node, ast.FunctionDef):
             scope += 1
 
