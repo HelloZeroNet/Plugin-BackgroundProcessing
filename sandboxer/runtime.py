@@ -35,7 +35,7 @@ def fillScope0(scope0):
         "len", "ord", "super", "filter", "range", "staticmethod", "pow",
         "divmod", "enumerate", "apply", "zip", "hex", "next", "chr", "xrange",
         "hasattr", "delattr", "setattr", "property", "coerce", "unichr", "id",
-        "min", "any", "map", "max", "callable", "classmethod"
+        "min", "any", "map", "max", "callable", "classmethod", "exit", "quit"
     ]
     for func_name in funcs:
         scope0.inherits[func_name] = eval(func_name)  # Couldn't find a better way

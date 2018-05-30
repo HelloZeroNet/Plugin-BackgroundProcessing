@@ -16,4 +16,4 @@ def setBuiltins(scope0):
 		return scope0["locals"]()
 	scope0.inherits["globals"] = globals
 
-	#arr = ['input', 'reload', 'exit', 'print', 'open', 'quit', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']
+	#arr = ['input', 'reload', 'print', 'open', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']
