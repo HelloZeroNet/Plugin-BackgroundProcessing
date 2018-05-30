@@ -29,6 +29,8 @@ class Scope(object):
         # Vars
         if name == "vars":
             return self.getVars()
+        elif name == "locals":
+            return self.getLocals()
 
 
         if self.inherits is not None:
@@ -56,6 +58,11 @@ class Scope(object):
             pass
         def vars(object=ThisNone):
             if object is ThisNone:
-                return self.locals()
+                return self["locals"]()
             return object.__dict__
         return vars
+
+    def getLocals(self):
+        def locals():
+            return self.vars
+        return locals

@@ -18,4 +18,4 @@ def getBuiltins(scope0):
 
 	return builtins
 
-	#arr = ['input', 'reload', 'locals', 'exit', 'print', 'globals', 'open', 'quit', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']
+	#arr = ['input', 'reload', 'exit', 'print', 'globals', 'open', 'quit', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']
