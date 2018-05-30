@@ -1,5 +1,6 @@
 import ast
 import random
+import runtime
 
 class Sandboxer(object):
     def __init__(self, code, ext):
@@ -15,7 +16,8 @@ class Sandboxer(object):
 
         filename = "0background.%s" % self.ext
         def do():
-            exec compile(self.parsed, filename=filename, mode="exec") in {}
+            scope0 = runtime.Scope()
+            exec compile(self.parsed, filename=filename, mode="exec") in {"scope0": scope0}
         return do
 
 
