@@ -39,4 +39,5 @@ def populateScope(scope):
         scope[func_name] = eval(func_name)  # Couldn't find a better way
 
     # Now add more builtins
-    scope.update(getBuiltins(scope))
+    for name, value in getBuiltins(scope).iteritems():
+        scope[name] = value
