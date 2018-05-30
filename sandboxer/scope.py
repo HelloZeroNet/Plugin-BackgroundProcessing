@@ -25,6 +25,12 @@ class Scope(object):
             return scope[name]
         if name in self.vars:
             return self.vars[name]
+
+        # Vars
+        if name == "vars":
+            return self.getVars()
+
+
         if self.inherits is not None:
             return self.inherits[name] # Recursive: type(inherits)==Scope
 
@@ -43,3 +49,13 @@ class Scope(object):
         return Scope(self)
     def inheritVariable(self, scope, name):
         self.inheritsVariable[name] = scope
+
+
+    def getVars(self):
+        class ThisNone(object):
+            pass
+        def vars(object=ThisNone):
+            if object is ThisNone:
+                return self.locals()
+            return object.__dict__
+        return vars
