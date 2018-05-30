@@ -54,12 +54,12 @@ class Sandboxer(object):
                 targets=[ast.Name(id="scope%s" % scope, ctx=ast.Store())],
                 value=ast.Call(
                     func=ast.Attribute(
-                        value=ast.Name(id=self.stuff_root, ctx=ast.Load()),
-                        attr="inheritScope",
+                        value=ast.Name(id="scope%s" % (scope-1), ctx=ast.Load()),
+                        attr="inherit",
                         ctx=ast.Load()
                     ),
-                    args=[ast.Name(id="scope%s" % (scope-1), ctx=ast.Load())],
-                    keywords=[], starargs=None, kwargs=None
+                    args=[], keywords=[],
+                    starargs=None, kwargs=None
                 )
             ))
 
