@@ -18,5 +18,6 @@ def setBuiltins(scope0):
 
     def reload():
         raise NotImplementedError("reload() is not supported")
+    scope0.inherits["reload"] = reload
 
     #arr = ['input', 'print', 'open', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']
