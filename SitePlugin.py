@@ -1,6 +1,5 @@
 from Plugin import PluginManager
 from spawner import Spawner
-import gevent
 
 @PluginManager.registerTo("Site")
 class SitePlugin(object):
@@ -24,7 +23,7 @@ class SitePlugin(object):
         for file in files:
             # Run every file that starts with 0background.
             if file.startswith("0background."):
-                gevent.spawn(self.spawnBackgroundProcess, file)
+                self.spawnBackgroundProcess(file)
 
 
     # Spawn background process if needed

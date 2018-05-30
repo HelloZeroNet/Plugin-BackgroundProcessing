@@ -1,5 +1,6 @@
 import ast
 import runtime
+import gevent
 
 class Sandboxer(object):
     def __init__(self, code, ext):
@@ -17,7 +18,10 @@ class Sandboxer(object):
             scope0 = runtime.Scope()
             runtime.fillScope0(scope0)
 
-            exec compile(self.parsed, filename=filename, mode="exec") in {"scope0": scope0}
+            def run():
+                exec compile(self.parsed, filename=filename, mode="exec") in {"scope0": scope0}
+            return gevent.spawn(run)
+
         return do
 
 

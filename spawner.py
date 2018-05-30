@@ -30,7 +30,7 @@ class Spawner(object):
         sandboxer = Sandboxer(code, ext)
         safe_code = sandboxer.toSafe()
 
-        self.threads.append(gevent.spawn(safe_code))
+        self.threads.append(safe_code())
 
 
     def findTranspiler(self, ext):
