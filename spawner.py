@@ -1,5 +1,7 @@
 import gevent
 import logging
+import os
+import importlib
 
 class Spawner(object):
     def __init__(self, site):
@@ -30,7 +32,11 @@ class Spawner(object):
 
 
     def findTranspiler(self, ext):
-        raise NotImplementedError
+        try:
+            return importlib.import_module("transpilers.%s" % ext)
+        except ImportError, e:
+            return None
+
     def sandbox(self, code):
         raise NotImplementedError
 
