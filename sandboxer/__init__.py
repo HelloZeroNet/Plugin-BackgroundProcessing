@@ -46,6 +46,34 @@ class Sandboxer(object):
                 )))
             return res
 
+        # Import
+        if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
+            names = ast.List(elts=[
+                ast.Tuple(elts=[
+                    ast.Str(s=name.name),
+                    ast.Str(s=name.asname)
+                ], ctx=ast.Load())
+                for name in node.names
+            ], ctx=ast.Load())
+
+            none = ast.Name(id="None", ctx=ast.Load())
+            if isinstance(node, ast.ImportFrom):
+                from_ = ast.Str(node.module) if node.module else none
+                level = ast.Num(node.level or 0)
+            else:
+                from_ = none
+                level = none
+
+            return ast.Expr(value=ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
+                    attr="import_",
+                    ctx=ast.Load()
+                ),
+                args=[names, from_, level],
+                keywords=[], starargs=None, kwargs=None
+            ))
+
 
         if isinstance(node, ast.FunctionDef):
             scope += 1
