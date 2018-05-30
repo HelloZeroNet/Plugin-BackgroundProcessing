@@ -63,6 +63,7 @@ class Sandboxer(object):
                 )
             ))
 
+            # Arguments
             for arg in node.args.args:
                 node.body.insert(1, ast.Assign(
                     targets=[ast.Subscript(
@@ -72,6 +73,29 @@ class Sandboxer(object):
                     )],
                     value=ast.Name(id=arg.id, ctx=arg.ctx)
                 ))
+
+            # Vararg
+            if node.args.vararg is not None:
+                node.body.insert(1, ast.Assign(
+                    targets=[ast.Subscript(
+                        value=ast.Name(id="scope%s" % scope, ctx=arg.ctx),
+                        slice=ast.Index(value=ast.Str(s=node.args.vararg)),
+                        ctx=arg.ctx
+                    )],
+                    value=ast.Name(id=node.args.vararg, ctx=arg.ctx)
+                ))
+
+            # Kwarg
+            if node.args.kwarg is not None:
+                node.body.insert(1, ast.Assign(
+                    targets=[ast.Subscript(
+                        value=ast.Name(id="scope%s" % scope, ctx=arg.ctx),
+                        slice=ast.Index(value=ast.Str(s=node.args.kwarg)),
+                        ctx=arg.ctx
+                    )],
+                    value=ast.Name(id=node.args.kwarg, ctx=arg.ctx)
+                ))
+
 
         if isinstance(node, ast.FunctionDef) and not isinstance(parent, ast.ClassDef):
             oldname = node.name
