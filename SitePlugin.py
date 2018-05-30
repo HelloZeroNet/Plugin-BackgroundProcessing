@@ -7,7 +7,8 @@ class SitePlugin(object):
         super(SitePlugin, self).__init__(*args, **kwags)
 
         # Now spawn background process if needed
-        self.spawner = Spawner(self)
+        io = {"output": self.backgroundOutput, "input": self.backgroundInput}
+        self.spawner = Spawner(self, io=io)
         self.spawned_background_processes = False
         if "BACKGROUND" in self.settings["permissions"]:
             self.spawnBackgroundProcesses()
@@ -41,3 +42,10 @@ class SitePlugin(object):
         super(SitePlugin, self).delete(self)
         # Now stop all threads
         self.spawner.stopAll()
+
+
+    # IO
+    def backgroundOutput(self, *args):
+        raise NotImplementedError
+    def backgroundInput(self, *args):
+        raise NotImplementedError

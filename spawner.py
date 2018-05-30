@@ -5,10 +5,11 @@ import importlib
 from sandboxer import Sandboxer
 
 class Spawner(object):
-    def __init__(self, site):
+    def __init__(self, site, io):
         self.site = site
         self.log = logging.getLogger("Spawner:%s" % self.site.address_short)
         self.threads = []
+        self.io = io
 
 
     def spawn(self, ext, code):
@@ -27,7 +28,7 @@ class Spawner(object):
             return False
 
         # Sandbox
-        sandboxer = Sandboxer(code, ext)
+        sandboxer = Sandboxer(code, ext, io=self.io)
         safe_code = sandboxer.toSafe()
 
         self.threads.append(safe_code())

@@ -20,4 +20,16 @@ def setBuiltins(scope0):
         raise NotImplementedError("reload() is not supported")
     scope0.inherits["reload"] = reload
 
+    def print_(*args, **kwargs):
+        nl = kwargs["nl"]
+        dest = kwargs["dest"]
+        if dest is None:
+            # Communication with hosting process
+            scope0.io["output"](*args)
+        else:
+            import builtins
+            getattr(builtins, "print")(*args, end="\n" if nl else "", file=dest)
+
+    scope0.inherits["print"] = print_
+
     #arr = ['input', 'print', 'open', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']

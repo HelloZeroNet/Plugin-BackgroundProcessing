@@ -3,10 +3,11 @@ import runtime
 import gevent
 
 class Sandboxer(object):
-    def __init__(self, code, ext):
+    def __init__(self, code, ext, io):
         self.code = code
         self.ext = ext
         self.parsed = ast.parse(code, filename="0background.%s" % ext)
+        self.io = io
 
 
     def toSafe(self):
@@ -15,7 +16,7 @@ class Sandboxer(object):
 
         filename = "0background.%s" % self.ext
         def do():
-            scope0 = runtime.Scope()
+            scope0 = runtime.Scope(io=self.io)
             runtime.fillScope0(scope0)
 
             def run():
