@@ -82,29 +82,6 @@ class Sandboxer(object):
                 keywords=[], starargs=None, kwargs=None
             ))
 
-        # Print
-        if isinstance(node, ast.Print):
-            true = ast.Name(id="True", ctx=ast.Load())
-            false = ast.Name(id="False", ctx=ast.Load())
-            none = ast.Name(id="None", ctx=ast.Load())
-
-            return ast.Expr(value=ast.Call(
-                func=ast.Subscript(
-                    value=ast.Attribute(
-                        value=ast.Name(id="scope0", ctx=ast.Load()),
-                        attr="inherits",
-                        ctx=ast.Load()
-                    ),
-                    slice=ast.Index(value=ast.Str(s="print")),
-                    ctx=ast.Load()
-                ),
-                args=node.values, keywords=[
-                    ast.keyword(arg="nl", value=true if node.nl else false),
-                    ast.keyword(arg="dest", value=node.dest or none)
-                ],
-                starargs=None, kwargs=None
-            ))
-
 
         if isinstance(node, ast.FunctionDef):
             scope += 1
@@ -208,3 +185,26 @@ class Sandboxer(object):
                     value=ast.Name(id=node.name, ctx=ast.Load())
                 )
             ]
+
+        # Print
+        if isinstance(node, ast.Print):
+            true = ast.Name(id="True", ctx=ast.Load())
+            false = ast.Name(id="False", ctx=ast.Load())
+            none = ast.Name(id="None", ctx=ast.Load())
+
+            return ast.Expr(value=ast.Call(
+                func=ast.Subscript(
+                    value=ast.Attribute(
+                        value=ast.Name(id="scope0", ctx=ast.Load()),
+                        attr="inherits",
+                        ctx=ast.Load()
+                    ),
+                    slice=ast.Index(value=ast.Str(s="print")),
+                    ctx=ast.Load()
+                ),
+                args=node.values, keywords=[
+                    ast.keyword(arg="nl", value=true if node.nl else false),
+                    ast.keyword(arg="dest", value=node.dest or none)
+                ],
+                starargs=None, kwargs=None
+            ))
