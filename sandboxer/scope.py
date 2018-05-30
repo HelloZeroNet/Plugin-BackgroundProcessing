@@ -1,8 +1,8 @@
 class Scope(object):
     def __init__(self, inherits=None):
         self.vars = {}
-        self.inherits = inherits
         self.inheritsVariable = {}
+        self.inherits = inherits
 
     def import_(self, names, from_, level):
         for name, asname in names:

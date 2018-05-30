@@ -1,21 +1,15 @@
 class BuiltinNone(object):
 	pass
 
-def getBuiltins(scope0):
-	builtins = {}
+def setBuiltins(scope0):
+	scope0["help"]        = lambda: None
+	scope0["copyright"]   = lambda: None
+	scope0["credits"]     = lambda: None
+	scope0["license"]     = lambda: None
 
-	builtins["help"]        = lambda: None
-	builtins["copyright"]   = lambda: None
-	builtins["credits"]     = lambda: None
-	builtins["license"]     = lambda: None
-
-	builtins["__package__"] = "0background"
-	builtins["__name__"]    = "0background"
-	builtins["__doc__"]     = ""
-	builtins["__debug__"]   = False
-
-
-
-	return builtins
+	scope0["__package__"] = "0background"
+	scope0["__name__"]    = "0background"
+	scope0["__doc__"]     = ""
+	scope0["__debug__"]   = False
 
 	#arr = ['input', 'reload', 'exit', 'print', 'globals', 'open', 'quit', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval']

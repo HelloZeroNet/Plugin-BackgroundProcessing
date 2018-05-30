@@ -1,23 +1,21 @@
 import importlib
 from scope import Scope
-from vmbuiltins import getBuiltins
+from vmbuiltins import setBuiltins
 
 
 # Return scope-before-scope0
-def getRootScope():
-    scope = {}
-
+def fillScope0(scope0):
     # Exceptions
     import exceptions
     for name in vars(exceptions):
-        scope[name] = getattr(exceptions, name)
+        scope0[name] = getattr(exceptions, name)
 
     # Built-in constants
-    scope["False"] = False
-    scope["True"] = True
-    scope["None"] = None
-    scope["NotImplemented"] = NotImplemented
-    scope["Ellipsis"] = Ellipsis
+    scope0["False"] = False
+    scope0["True"] = True
+    scope0["None"] = None
+    scope0["NotImplemented"] = NotImplemented
+    scope0["Ellipsis"] = Ellipsis
 
     # Types
     types = [
@@ -26,7 +24,7 @@ def getRootScope():
         "reversed", "str", "int", "complex", "bool", "buffer", "object",
     ]
     for type_name in types:
-        scope[type_name] = eval(type_name)  # Couldn't find a better way
+        scope0[type_name] = eval(type_name)  # Couldn't find a better way
 
     # Secure default functions
     funcs = [
@@ -38,9 +36,7 @@ def getRootScope():
         "min", "any", "map", "max", "callable", "classmethod"
     ]
     for func_name in funcs:
-        scope[func_name] = eval(func_name)  # Couldn't find a better way
+        scope0[func_name] = eval(func_name)  # Couldn't find a better way
 
     # Now add more builtins
-    scope.update(getBuiltins(scope))
-
-    return scope
+    setBuiltins(scope0)
