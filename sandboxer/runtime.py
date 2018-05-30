@@ -1,5 +1,6 @@
 import importlib
 from scope import Scope
+from vmbuiltins import getBuiltins
 
 
 # Fill scope (usually scope0) with default variables
@@ -37,7 +38,5 @@ def populateScope(scope):
     for func_name in funcs:
         scope[func_name] = eval(func_name)  # Couldn't find a better way
 
-
-
-arr = ['help', 'vars', 'copyright', 'input', 'reload', '__package__', 'locals', 'exit', 'print', 'credits', '__name__', 'license', 'globals', 'open', 'quit', '__doc__', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval', '__debug__']
-print [name for name in arr if name not in funcs]
+    # Now add more builtins
+    scope.update(getBuiltins(scope))
