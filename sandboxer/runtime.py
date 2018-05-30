@@ -1,52 +1,5 @@
 import importlib
-
-class Scope(object):
-    def __init__(self, inherits=None):
-        self.vars = {}
-        self.inherits = inherits
-        self.inheritsVariable = {}
-
-    def import_(self, names, from_, level):
-        for name, asname in names:
-            if asname is None:
-                asname = name
-
-            if from_ is not None:
-                line = "from %s import %s as import_module" % (from_, name)
-            else:
-                line = "import %s as import_module" % name
-
-            exec compile(line, "<import>", "single")
-            self[asname] = import_module
-            del import_module
-
-
-    def __getitem__(self, name):
-        if name in self.inheritsVariable:
-            scope = self.inheritsVariable[name]
-            return scope[name]
-        if name in self.vars:
-            return self.vars[name]
-        if self.inherits is not None:
-            return self.inherits[name] # Recursive: type(inherits)==Scope
-
-        raise NameError(name)
-
-    def __setitem__(self, name, value):
-        if name in self.inheritsVariable:
-            scope = self.inheritsVariable[name]
-            scope[name] = value
-            return
-
-        self.vars[name] = value
-
-
-    def inherit(self):
-        return Scope(self)
-    def inheritVariable(self, scope, name):
-        self.inheritsVariable[name] = scope
-
-
+from scope import Scope
 
 
 # Fill scope (usually scope0) with default variables
@@ -83,3 +36,8 @@ def populateScope(scope):
     ]
     for func_name in funcs:
         scope[func_name] = eval(func_name)  # Couldn't find a better way
+
+
+
+arr = ['help', 'vars', 'copyright', 'input', 'reload', '__package__', 'locals', 'exit', 'print', 'credits', '__name__', 'license', 'globals', 'open', 'quit', '__doc__', 'raw_input', 'compile', '__import__', 'file', 'execfile', 'eval', '__debug__']
+print [name for name in arr if name not in funcs]
