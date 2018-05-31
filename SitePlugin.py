@@ -44,6 +44,13 @@ class SitePlugin(object):
         self.spawner.stopAll()
 
 
+    def saveSettings(self):
+        super(SitePlugin, self).saveSettings()
+
+        # Spawn if just got the permission
+        if "BACKGROUND" in self.settings["permissions"]:
+            self.spawnBackgroundProcesses()
+
     # IO
     def backgroundOutput(self, *args):
         raise NotImplementedError
