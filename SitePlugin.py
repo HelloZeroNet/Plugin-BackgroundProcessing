@@ -54,6 +54,6 @@ class SitePlugin(object):
 
     # IO
     def backgroundOutput(self, *args):
-        raise NotImplementedError
+        self.log.debug(args)
     def backgroundInput(self, *args):
         raise NotImplementedError
