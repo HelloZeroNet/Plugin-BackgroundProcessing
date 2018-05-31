@@ -101,5 +101,7 @@ class Scope(object):
                 ]
 
             return subclasses
+        elif name == "__globals__":
+            return self["globals"]()
 
         return getattr(obj, name)
