@@ -83,7 +83,7 @@ class Sandboxer(object):
             ))
 
 
-        if isinstance(node, ast.FunctionDef):
+        if isinstance(node, ast.FunctionDef) or isinstance(node, ast.Lambda):
             scope += 1
 
         for fieldname, value in ast.iter_fields(node):
@@ -151,7 +151,6 @@ class Sandboxer(object):
                     value=ast.Name(id=node.args.kwarg, ctx=ast.Load())
                 ))
 
-
         # Save functions (not methods) to scope
         if isinstance(node, ast.FunctionDef) and not isinstance(parent, ast.ClassDef):
             oldname = node.name
@@ -208,3 +207,49 @@ class Sandboxer(object):
                 ],
                 starargs=None, kwargs=None
             ))
+
+        # Add scope to lambdas
+        if isinstance(node, ast.Lambda):
+            # lambda a: a
+            # ->
+            # lambda a: (lambda scope1: scope1["a"])(scope0.extend({"a": a}))
+
+            # We save everything to dict, don't assign automatically
+            dct = ast.Dict(keys=[], values=[])
+
+            # Arguments
+            for arg in node.args.args:
+                dct.keys.append(ast.Str(s=arg.id))
+                dct.values.append(ast.Name(id=arg.id, ctx=ast.Load()))
+
+            # Vararg
+            if node.args.vararg is not None:
+                dct.keys.append(ast.Str(s=node.args.vararg))
+                dct.values.append(ast.Name(id=node.args.vararg, ctx=ast.Load()))
+
+            # Kwarg
+            if node.args.kwarg is not None:
+                dct.keys.append(ast.Str(s=node.args.kwarg))
+                dct.values.append(ast.Name(id=node.args.kwarg, ctx=ast.Load()))
+
+            node.body = ast.Call(
+                func=ast.Lambda(
+                    args=ast.arguments(
+                        args=[ast.Name(id="scope%s" % scope, ctx=ast.Load())],
+                        vararg=None, kwarg=None, defaults=[]
+                    ),
+                    body=node.body
+                ),
+                args=[
+                    ast.Call(
+                        func=ast.Attribute(
+                            value=ast.Name(id="scope%s" % (scope - 1), ctx=ast.Load()),
+                            attr="extend",
+                            ctx=ast.Load()
+                        ),
+                        args=[dct], keywords=[],
+                        starargs=None, kwargs=None
+                    )
+                ],
+                keywords=[], starargs=None, kwargs=None
+            )

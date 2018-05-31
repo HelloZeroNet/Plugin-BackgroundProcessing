@@ -56,6 +56,12 @@ class Scope(object):
     def inheritVariable(self, scope, name):
         self.inheritsVariable[name] = scope
 
+    def extend(self, dct):
+        scope1 = Scope(self)
+        for name, value in dct.iteritems():
+            scope1[name] = value
+        return scope1
+
 
     def getVars(self):
         class ThisNone(object):
