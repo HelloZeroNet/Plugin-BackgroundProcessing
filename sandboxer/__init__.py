@@ -265,3 +265,22 @@ class Sandboxer(object):
                 ],
                 keywords=[], starargs=None, kwargs=None
             )
+
+        # Now do something to prevent object.__subclasses__() hacks and others
+        if (
+            isinstance(node, ast.Attribute) and
+            node.attr.startswith("__") and
+            node.attr.endswith("__")
+        ):
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="scope0", ctx=ast.Load()),
+                    attr="safeGet",
+                    ctx=ast.Load()
+                ),
+                args=[
+                    node.value,
+                    ast.Str(s=node.attr)
+                ],
+                keywords=[], starargs=None, kwargs=None
+            )

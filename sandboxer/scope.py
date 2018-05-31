@@ -76,3 +76,7 @@ class Scope(object):
         def locals():
             return self.vars
         return locals
+
+
+    def safeGet(self, obj, name):
+        return getattr(obj, name)
