@@ -103,5 +103,7 @@ class Scope(object):
             return subclasses
         elif name == "__globals__":
             return self["globals"]()
+        elif name in ("__code__",):
+            raise TypeError("%s is unsafe" % name)
 
         return getattr(obj, name)
