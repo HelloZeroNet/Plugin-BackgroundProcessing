@@ -83,25 +83,37 @@ class Sandboxer(object):
             ))
 
 
-        if isinstance(node, ast.FunctionDef) or isinstance(node, ast.Lambda):
+        if isinstance(node, ast.FunctionDef):
             scope += 1
 
-        for fieldname, value in ast.iter_fields(node):
-            if isinstance(value, ast.AST):
-                res = self.handleNode(value, node, scope)
-                if res is not None:
-                    setattr(node, fieldname, res)
-            elif isinstance(value, list):
-                result = []
-                for child in value:
-                    val = self.handleNode(child, node, scope)
-                    if val is None:
-                        result.append(child)
-                    elif isinstance(val, list):
-                        result += val
-                    else:
-                        result.append(val)
-                setattr(node, fieldname, result)
+        if isinstance(node, ast.Lambda):
+            # Handle arguments (default values) in parent scope
+            args = self.handleNode(node.args, node, scope)
+            if args is not None:
+                node.args = args
+
+            # Now increment scope and handle body
+            scope += 1
+            body = self.handleNode(node.body, node, scope)
+            if body is not None:
+                node.body = body
+        else:
+            for fieldname, value in ast.iter_fields(node):
+                if isinstance(value, ast.AST):
+                    res = self.handleNode(value, node, scope)
+                    if res is not None:
+                        setattr(node, fieldname, res)
+                elif isinstance(value, list):
+                    result = []
+                    for child in value:
+                        val = self.handleNode(child, node, scope)
+                        if val is None:
+                            result.append(child)
+                        elif isinstance(val, list):
+                            result += val
+                        else:
+                            result.append(val)
+                    setattr(node, fieldname, result)
 
         # Add scope to functions
         if isinstance(node, ast.FunctionDef):
