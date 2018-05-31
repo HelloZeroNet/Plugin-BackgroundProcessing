@@ -101,9 +101,9 @@ class Scope(object):
                 ]
 
             return subclasses
-        elif name == "__globals__":
+        elif name in ("__globals__", "func_globals"):
             return self["globals"]()
-        elif name in ("__code__",):
+        elif name in ("__code__", "func_code"):
             raise TypeError("%s is unsafe" % name)
 
         return getattr(obj, name)
