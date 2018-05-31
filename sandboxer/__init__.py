@@ -269,12 +269,12 @@ class Sandboxer(object):
         # Now do something to prevent object.__subclasses__() hacks and others
         if (
             isinstance(node, ast.Attribute) and
-            (
+            ((
                 node.attr.startswith("__") and
                 node.attr.endswith("__")
             ) or (
                 node.attr.startswith("func_")
-            )
+            ))
         ):
             return ast.Call(
                 func=ast.Attribute(
