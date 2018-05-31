@@ -1,3 +1,12 @@
+allowed_classes = [
+    type, int, basestring, bytearray, list, type(None), type(NotImplemented),
+    super, xrange, dict, set, slice, staticmethod, complex, float, buffer, long,
+    frozenset, property, memoryview, tuple, enumerate, reversed, type(Ellipsis),
+    classmethod, type({}.iterkeys()), type({}.iteritems()),
+    type({}.itervalues())
+]
+
+
 class Scope(object):
     def __init__(self, inherits=None, io=None):
         self.vars = {}
@@ -48,6 +57,10 @@ class Scope(object):
             scope[name] = value
             return
 
+        if isinstance(value, type):
+            # User-defined class
+            allowed_classes.append(value)
+
         self.vars[name] = value
 
 
@@ -79,4 +92,14 @@ class Scope(object):
 
 
     def safeGet(self, obj, name):
+        if name == "__subclasses__":
+            def subclasses():
+                return [
+                    subclass for subclass
+                    in obj.__subclasses__()
+                    if subclass in allowed_classes
+                ]
+
+            return subclasses
+
         return getattr(obj, name)
