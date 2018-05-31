@@ -20,8 +20,14 @@ class Scope(object):
                 asname = name
 
             if from_ is not None:
+                if from_ not in self.io.allowed_import:
+                    raise ImportError("%s is not allowed to be imported" % from_)
+
                 line = "from %s import %s as import_module" % (from_, name)
             else:
+                if name not in self.io.allowed_import:
+                    raise ImportError("%s is not allowed to be imported" % name)
+
                 line = "import %s as import_module" % name
 
             exec compile(line, "<import>", "single")
