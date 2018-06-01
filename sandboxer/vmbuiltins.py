@@ -42,4 +42,13 @@ def setBuiltins(scope0):
     scope0.inherits["input"] = input_
     scope0.inherits["raw_input"] = input_
 
+    # Attributes
+    def getattr_(obj, name):
+        return scope0.safeAttr(obj)[name]
+    scope0.inherits["getattr"] = getattr_
+
+    def setattr_(obj, name, value):
+        scope0.safeAttr(obj)[name] = value
+    scope0.inherits["setattr"] = setattr_
+
     #arr = ['open', 'compile', '__import__', 'file', 'execfile', 'eval']

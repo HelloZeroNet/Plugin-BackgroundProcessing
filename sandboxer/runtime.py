@@ -31,11 +31,11 @@ def fillScope0(scope0):
     # Secure default functions
     funcs = [
         "oct", "bin", "format", "repr", "sorted", "iter", "round", "dir", "cmp",
-        "reduce", "intern", "issubclass", "sum", "getattr", "abs", "hash",
-        "len", "ord", "super", "filter", "range", "staticmethod", "pow",
-        "divmod", "enumerate", "apply", "zip", "hex", "next", "chr", "xrange",
-        "hasattr", "delattr", "setattr", "property", "coerce", "unichr", "id",
-        "min", "any", "map", "max", "callable", "classmethod", "exit", "quit"
+        "reduce", "intern", "issubclass", "sum", "abs", "hash", "len", "ord",
+        "super", "filter", "range", "staticmethod", "pow", "divmod",
+        "enumerate", "apply", "zip", "hex", "next", "chr", "xrange", "hasattr",
+        "delattr", "property", "coerce", "unichr", "id", "min", "any", "map",
+        "max", "callable", "classmethod", "exit", "quit"
     ]
     for func_name in funcs:
         scope0.inherits[func_name] = eval(func_name)  # Couldn't find a better way
