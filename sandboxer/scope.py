@@ -20,11 +20,18 @@ class Scope(object):
                 asname = name
 
             if from_ is not None:
-                line = "from %s import %s as import_module" % (from_, name)
-            else:
-                line = "import %s as import_module" % name
+                if from_ not in self.io.allowed_import:
+                    raise ImportError("%s is not allowed to be imported" % from_)
 
-            exec compile(line, "<import>", "single")
+                exec compile("from %s import %s as import_module" % (from_, name), "<import>", "single")
+            elif name in self.io.modules:
+                import_module = self.io.modules[name](self.io)
+            else:
+                if name not in self.io.allowed_import:
+                    raise ImportError("%s is not allowed to be imported" % name)
+
+                exec compile("import %s as import_module" % name, "<import>", "single")
+
             self[asname] = import_module
             del import_module
 
@@ -109,9 +116,9 @@ class SafeAttr(object):
                 ]
 
             return subclasses
-        elif name == "__globals__":
+        elif name in ("__globals__", "func_globals"):
             return self["globals"]()
-        elif name in ("__code__",):
+        elif name in ("__code__", "func_code"):
             raise TypeError("%s is unsafe" % name)
 
         return getattr(self.obj, name)

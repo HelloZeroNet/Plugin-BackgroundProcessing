@@ -1,5 +1,6 @@
 from Plugin import PluginManager
 from spawner import Spawner
+import storage
 
 @PluginManager.registerTo("Site")
 class SitePlugin(object):
@@ -7,7 +8,7 @@ class SitePlugin(object):
         super(SitePlugin, self).__init__(*args, **kwags)
 
         # Now spawn background process if needed
-        io = {"output": self.backgroundOutput, "input": self.backgroundInput}
+        io = {"output": self.backgroundOutput, "input": self.backgroundInput, "allowed_import": (), "modules": storage.modules}
         self.spawner = Spawner(self, io=io)
         self.spawned_background_processes = False
         if "BACKGROUND" in self.settings["permissions"]:
@@ -43,6 +44,13 @@ class SitePlugin(object):
         # Now stop all threads
         self.spawner.stopAll()
 
+
+    def saveSettings(self):
+        super(SitePlugin, self).saveSettings()
+
+        # Spawn if just got the permission
+        if "BACKGROUND" in self.settings["permissions"]:
+            self.spawnBackgroundProcesses()
 
     # IO
     def backgroundOutput(self, *args):

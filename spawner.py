@@ -31,12 +31,13 @@ class Spawner(object):
         sandboxer = Sandboxer(code, ext, io=self.io)
         safe_code = sandboxer.toSafe()
 
+        self.log.debug("Running 0background.%s" % ext)
         self.threads.append(safe_code())
 
 
     def findTranspiler(self, ext):
         try:
-            return importlib.import_module("transpilers.%s" % ext)
+            return importlib.import_module("BackgroundProcessing.transpilers.%s" % ext)
         except ImportError, e:
             return None
 
