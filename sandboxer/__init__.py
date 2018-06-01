@@ -272,15 +272,16 @@ class Sandboxer(object):
             node.attr.startswith("__") and
             node.attr.endswith("__")
         ):
-            return ast.Call(
-                func=ast.Attribute(
-                    value=ast.Name(id="scope0", ctx=ast.Load()),
-                    attr="safeGet",
-                    ctx=ast.Load()
+            return ast.Subscript(
+                value=ast.Call(
+                    func=ast.Attribute(
+                        value=ast.Name(id="scope0", ctx=ast.Load()),
+                        attr="safeAttr",
+                        ctx=ast.Load()
+                    ),
+                    args=[node.value],
+                    keywords=[], starargs=None, kwargs=None
                 ),
-                args=[
-                    node.value,
-                    ast.Str(s=node.attr)
-                ],
-                keywords=[], starargs=None, kwargs=None
+                slice=ast.Index(value=ast.Str(node.attr)),
+                ctx=node.ctx
             )
