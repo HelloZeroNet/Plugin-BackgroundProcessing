@@ -38,8 +38,11 @@ class Spawner(object):
     def findTranspiler(self, ext):
         try:
             return importlib.import_module("BackgroundProcessing.transpilers.%s" % ext)
-        except ImportError, e:
-            return None
+        except ImportError:
+            try:
+                return importlib.import_module("transpilers.%s" % ext)
+            except ImportError:
+                return None
 
 
     # Stop all threads

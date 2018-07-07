@@ -98,12 +98,20 @@ class Scope(object):
         return locals
 
 
-    def safeGet(self, obj, name):
+    def safeAttr(self, obj):
+        return SafeAttr(obj)
+
+
+class SafeAttr(object):
+    def __init__(self, obj):
+        self.obj = obj
+
+    def __getitem__(self, name):
         if name == "__subclasses__":
             def subclasses():
                 return [
                     subclass for subclass
-                    in obj.__subclasses__()
+                    in self.obj.__subclasses__()
                     if subclass in allowed_classes
                 ]
 
@@ -113,4 +121,14 @@ class Scope(object):
         elif name in ("__code__", "func_code"):
             raise TypeError("%s is unsafe" % name)
 
-        return getattr(obj, name)
+        return getattr(self.obj, name)
+
+    def __setitem__(self, name, value):
+        if name == "__subclasses__":
+            raise TypeError("__subclasses__ is read-only")
+        elif name == "__globals__":
+            raise TypeError("__globals__ is read-only")
+        elif name in ("__code__",):
+            raise TypeError("%s is unsafe" % name)
+
+        setattr(self.obj, name, value)
