@@ -11,7 +11,7 @@ class SitePlugin(object):
         io = {
             "output": self.backgroundOutput,
             "input": self.backgroundInput,
-            "allowed_import": (),
+            "allowed_import": ("json",),
             "modules": storage.modules,
             "site": self,
             "scope0": []
