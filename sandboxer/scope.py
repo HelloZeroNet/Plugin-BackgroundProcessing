@@ -128,7 +128,7 @@ class SafeAttr(object):
             raise TypeError("__subclasses__ is read-only")
         elif name == "__globals__":
             raise TypeError("__globals__ is read-only")
-        elif name in ("__code__",):
+        elif name in ("__code__", "func_code"):
             raise TypeError("%s is unsafe" % name)
 
         setattr(self.obj, name, value)
