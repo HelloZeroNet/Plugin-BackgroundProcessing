@@ -20,6 +20,8 @@ class SitePlugin(object):
         if "BACKGROUND" in self.settings["permissions"]:
             self.spawnBackgroundProcesses()
 
+        self.onFileDone.append(self.reloadBackgroundProcess)
+
 
     def spawnBackgroundProcesses(self):
         if self.spawned_background_processes:
@@ -37,11 +39,17 @@ class SitePlugin(object):
     # Spawn background process if needed
     def spawnBackgroundProcess(self, file_name):
         ext = file_name.replace("0background.", "")
+        # Kill old thread if it is running
+        self.spawner.stop(ext)
         # Read code
         code = self.storage.read(file_name)
         # Spawn
         self.spawner.spawn(ext, code)
 
+    # If a background process is changed, reload it
+    def reloadBackgroundProcess(self, inner_path):
+        if inner_path.startswith("0background."):
+            self.spawnBackgroundProcess(inner_path)
 
 
     def delete(self):

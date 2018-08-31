@@ -1,5 +1,6 @@
 import BackgroundPlugin
 import SitePlugin
+import UiWebsocketPlugin
 import storage
 
 def addModule(name, module):
