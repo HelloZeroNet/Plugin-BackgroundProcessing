@@ -47,6 +47,8 @@ def module(io):
 
 	class ZeroFrame(object):
 		def cmd(self, cmd, *args, **kwargs):
+			wait = kwargs.pop("wait", False)
+
 			# Check params
 			if len(args) == 0:
 				params = kwargs
@@ -59,8 +61,9 @@ def module(io):
 			req_id = last_req_id[0]
 			last_req_id[0] += 1
 
-			# Set callback
-			waiting_ids[req_id] = gevent.event.AsyncResult()
+			if wait:
+				# Set callback
+				waiting_ids[req_id] = gevent.event.AsyncResult()
 
 			# Send
 			ui_websocket.handleRequest({
@@ -69,15 +72,16 @@ def module(io):
 				"id": req_id
 			})
 
-			# Wait
-			result = waiting_ids[req_id].get()
+			if wait:
+				# Wait
+				result = waiting_ids[req_id].get()
 
-			# Reply
-			del waiting_ids[req_id]
-			if "error" in result:
-				raise ValueError(result["error"])
-			else:
-				return result
+				# Reply
+				del waiting_ids[req_id]
+				if "error" in result:
+					raise ValueError(result["error"])
+				else:
+					return result
 
 		# Same as settings .on... attribute, but can set several handlers
 		def on(self, event_name, func):
