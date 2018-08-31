@@ -17,7 +17,7 @@ class Sandboxer(object):
         filename = "0background.%s" % self.ext
         def do():
             scope0 = runtime.Scope(io=self.io)
-            self.io["scope0"] = scope0
+            self.io["scope0"].append(scope0)
             runtime.fillScope0(scope0)
 
             def run():

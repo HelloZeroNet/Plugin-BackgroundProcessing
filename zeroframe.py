@@ -105,3 +105,10 @@ def module(io):
 	zeroframe = ZeroFrame()
 	_cache[io["site"].address] = zeroframe
 	return zeroframe
+
+def close(io):
+	zeroframe = _cache[io["site"].address]
+	for key in list(zeroframe.__dict__.keys()):
+		if key.startswith("on"):
+			delattr(zeroframe, key)
+module.close = close

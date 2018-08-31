@@ -47,9 +47,13 @@ class Spawner(object):
 
     # Stop all threads
     def stopAll(self):
+        for scope0 in self.io["scope0"]:
+            for f in scope0.to_close:
+                f(self.io)
         for _, thread in self.threads:
             thread.kill(block=False)
         self.threads = []
+        self.io["scope0"] = []
 
     # Stop by extension
     def stop(self, ext):

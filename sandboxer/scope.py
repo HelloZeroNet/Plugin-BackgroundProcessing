@@ -13,6 +13,10 @@ class Scope(object):
         self.inheritsVariable = {}
         self.inherits = inherits
         self.io = io
+        if inherits is None:
+            self.to_close = []
+        else:
+            self.to_close = inherits.to_close
 
     def import_(self, names, from_, level):
         for name, asname in names:
@@ -26,6 +30,8 @@ class Scope(object):
                 exec compile("from %s import %s as import_module" % (from_, name), "<import>", "single")
             elif name in self.io["modules"]:
                 import_module = self.io["modules"][name](self.io)
+                if hasattr(self.io["modules"][name], "close"):
+                    self.to_close.append(self.io["modules"][name].close)
             else:
                 if name not in self.io["allowed_import"]:
                     raise ImportError("%s is not allowed to be imported" % name)
