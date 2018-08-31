@@ -8,7 +8,13 @@ class SitePlugin(object):
         super(SitePlugin, self).__init__(*args, **kwags)
 
         # Now spawn background process if needed
-        io = {"output": self.backgroundOutput, "input": self.backgroundInput, "allowed_import": (), "modules": storage.modules}
+        io = {
+            "output": self.backgroundOutput,
+            "input": self.backgroundInput,
+            "allowed_import": (),
+            "modules": storage.modules,
+            "site": self
+        }
         self.spawner = Spawner(self, io=io)
         self.spawned_background_processes = False
         if "BACKGROUND" in self.settings["permissions"]:
