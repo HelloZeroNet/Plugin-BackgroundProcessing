@@ -1,4 +1,10 @@
+_cache = {}
+
 def module(io):
+	if io["site"].address in _cache:
+		return _cache[io["site"].address]
+
+
 	import sys
 	import gevent
 	from User import UserManager
@@ -97,4 +103,5 @@ def module(io):
 			setattr(self, attr_name, handler)
 
 	zeroframe = ZeroFrame()
+	_cache[io["site"].address] = zeroframe
 	return zeroframe
