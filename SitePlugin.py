@@ -54,7 +54,7 @@ class SitePlugin(object):
 
     def delete(self):
         # First really delete
-        super(SitePlugin, self).delete(self)
+        super(SitePlugin, self).delete()
         # Now stop all threads
         self.spawner.stopAll()
 
