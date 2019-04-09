@@ -9,3 +9,7 @@ def addModule(name, module):
 # Add ZeroFrame module
 from . import zeroframe
 addModule("ZeroFrame", zeroframe.module)
+
+# Add Crypt module
+from . import crypt
+addModule("Crypt", crypt.module)
