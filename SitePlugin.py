@@ -12,7 +12,7 @@ class SitePlugin(object):
             "output": self.backgroundOutput,
             "input": self.backgroundInput,
             "readModule": self.readModule,
-            "allowed_import": ("json",),
+            "allowed_import": ("json", "re", "datetime", "base64"),
             "modules": storage.modules,
             "site": self,
             "scope0": [],
