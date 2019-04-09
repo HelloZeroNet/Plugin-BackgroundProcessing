@@ -10,6 +10,7 @@ class Spawner(object):
         self.log = logging.getLogger("Spawner:%s" % self.site.address_short)
         self.threads = []
         self.io = io
+        io["spawner"] = self
 
 
     def spawn(self, ext, code):
@@ -28,11 +29,11 @@ class Spawner(object):
             return False
 
         # Sandbox
-        sandboxer = Sandboxer(code, ext, io=self.io)
+        sandboxer = Sandboxer(code, "0background.%s" % ext, io=self.io)
         safe_code = sandboxer.toSafe()
 
         self.log.debug("Running 0background.%s" % ext)
-        self.threads.append((ext, safe_code()))
+        self.threads.append((ext, gevent.spawn(safe_code)))
 
 
     def findTranspiler(self, ext):

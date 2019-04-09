@@ -38,13 +38,49 @@ class Scope(object):
         self.vars = {}
         self.inheritsVariable = {}
         self.inherits = inherits
-        self.io = io
         if inherits is None:
             self.to_close = []
+            self.filename = None  # will be set by spawner
+            self.io = io
         else:
             self.to_close = inherits.to_close
+            self.filename = inherits.filename
+            self.io = inherits.io
 
     def import_(self, names, from_, level):
+        if level is not None:
+            # Import local file
+            file_parts = self.filename.split("/")
+            if level > len(file_parts):
+                raise ImportError("Import of %s outside site root" % from_)
+            new_path = "/".join(file_parts[:-level] + from_.split("."))
+
+            if new_path not in self.io["import_cache"]:
+                # Handle modules
+                code, new_path = self.io["readModule"](new_path)
+                if code is None:
+                    raise ImportError("Cannot read %s" % new_path)
+
+                # Execute code
+                from . import Sandboxer
+                sandboxer = Sandboxer(code, new_path, io=self.io)
+                safe_code = sandboxer.toSafe()
+                self.io["import_cache"] = safe_code()
+
+
+            result_scope = self.io["import_cache"]
+
+            # Import the result
+            for name, asname in names:
+                if asname is None:
+                    asname = name
+                if name not in result_scope:
+                    raise ImportError("Cannot import %s from %s" % (name, new_path))
+                self[asname] = result_scope[name]
+
+            return
+
+
         for name, asname in names:
             if asname is None:
                 asname = name
@@ -93,6 +129,13 @@ class Scope(object):
                 return self.inherits[name]
 
         raise NameError(name)
+
+    def __contains__(self, name):
+        try:
+            self[name]
+            return True
+        except NameError:
+            return False
 
     def __setitem__(self, name, value):
         if name in self.inheritsVariable:

@@ -3,10 +3,10 @@ from . import runtime
 import gevent
 
 class Sandboxer(object):
-    def __init__(self, code, ext, io):
+    def __init__(self, code, filename, io):
         self.code = code
-        self.ext = ext
-        self.parsed = ast.parse(code, filename="0background.%s" % ext)
+        self.filename = filename
+        self.parsed = ast.parse(code, filename=filename)
         self.io = io
 
 
@@ -14,15 +14,14 @@ class Sandboxer(object):
         self.handleNode(self.parsed, None, 0)
         ast.fix_missing_locations(self.parsed)
 
-        filename = "0background.%s" % self.ext
         def do():
             scope0 = runtime.Scope(io=self.io)
+            scope0.filename = self.filename
             self.io["scope0"].append(scope0)
             runtime.fillScope0(scope0)
 
-            def run():
-                exec(compile(self.parsed, filename=filename, mode="exec"), {"scope0": scope0})
-            return gevent.spawn(run)
+            exec(compile(self.parsed, filename=self.filename, mode="exec"), {"scope0": scope0})
+            return scope0
 
         return do
 

@@ -11,10 +11,12 @@ class SitePlugin(object):
         io = {
             "output": self.backgroundOutput,
             "input": self.backgroundInput,
+            "readModule": self.readModule,
             "allowed_import": ("json",),
             "modules": storage.modules,
             "site": self,
-            "scope0": []
+            "scope0": [],
+            "import_cache": {}
         }
         self.spawner = Spawner(self, io=io)
         self.spawned_background_processes = False
@@ -71,3 +73,14 @@ class SitePlugin(object):
         print(*args)
     def backgroundInput(self, *args):
         raise NotImplementedError
+    def readModule(self, path):
+        if self.storage.isDir(path):
+            path += "/__init__.py"
+        else:
+            path += ".py"
+
+        try:
+            with self.storage.open(path, "r") as f:
+                return f.read(), path
+        except IOError:
+            return None, path
