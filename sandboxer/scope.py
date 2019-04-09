@@ -15,7 +15,7 @@ allowed_classes = [
     SyntaxError, SyntaxWarning, SystemError, SystemExit, TabError, TimeoutError,
     TypeError, UnboundLocalError, UnicodeDecodeError, UnicodeEncodeError,
     UnicodeError, UnicodeTranslateError, UnicodeWarning, UserWarning,
-    ValueError, Warning, WindowsError, ZeroDivisionError,
+    ValueError, Warning, ZeroDivisionError,
 
     # Primitives
     bool, float, int, bytes, str, complex,
