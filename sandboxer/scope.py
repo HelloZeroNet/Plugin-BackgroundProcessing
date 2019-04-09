@@ -53,7 +53,9 @@ class Scope(object):
                 if from_ not in self.io["allowed_import"]:
                     raise ImportError("%s is not allowed to be imported" % from_)
 
-                exec(compile("from %s import %s as import_module" % (from_, name), "<import>", "single"))
+                scope = {}
+                exec(compile("from %s import %s as import_module" % (from_, name), "<import>", "single"), scope, scope)
+                import_module = scope["import_module"]
             elif name in self.io["modules"]:
                 import_module = self.io["modules"][name](self.io)
                 if hasattr(self.io["modules"][name], "close"):
@@ -62,7 +64,9 @@ class Scope(object):
                 if name not in self.io["allowed_import"]:
                     raise ImportError("%s is not allowed to be imported" % name)
 
-                exec(compile("import %s as import_module" % name, "<import>", "single"))
+                scope = {}
+                exec(compile("import %s as import_module" % name, "<import>", "single"), scope, scope)
+                import_module = scope["import_module"]
 
             self[asname] = import_module
             del import_module

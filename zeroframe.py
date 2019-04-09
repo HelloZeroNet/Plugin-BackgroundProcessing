@@ -59,7 +59,7 @@ def module(io):
 			if len(args) == 0:
 				params = kwargs
 			elif len(kwargs) == 0:
-				params = args
+				params = list(args)
 			else:
 				raise TypeError("ZeroFrame.cmd() accepts either *vararg or **kwarg, not both")
 
@@ -84,7 +84,7 @@ def module(io):
 
 				# Reply
 				del waiting_ids[req_id]
-				if "error" in result:
+				if isinstance(result, dict) and "error" in result:
 					raise ValueError(result["error"])
 				else:
 					return result

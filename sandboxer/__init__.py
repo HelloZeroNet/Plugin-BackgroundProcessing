@@ -136,10 +136,10 @@ class Sandboxer(object):
                 node.body.insert(1, ast.Assign(
                     targets=[ast.Subscript(
                         value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
-                        slice=ast.Index(value=ast.Str(s=arg.id)),
+                        slice=ast.Index(value=ast.Str(s=arg.arg)),
                         ctx=ast.Store()
                     )],
-                    value=ast.Name(id=arg.id, ctx=ast.Load())
+                    value=ast.Name(id=arg.arg, ctx=ast.Load())
                 ))
 
             # Vararg
@@ -147,10 +147,10 @@ class Sandboxer(object):
                 node.body.insert(1, ast.Assign(
                     targets=[ast.Subscript(
                         value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
-                        slice=ast.Index(value=ast.Str(s=node.args.vararg)),
+                        slice=ast.Index(value=ast.Str(s=node.args.vararg.arg)),
                         ctx=ast.Store()
                     )],
-                    value=ast.Name(id=node.args.vararg, ctx=ast.Load())
+                    value=ast.Name(id=node.args.vararg.arg, ctx=ast.Load())
                 ))
 
             # Kwarg
@@ -158,10 +158,10 @@ class Sandboxer(object):
                 node.body.insert(1, ast.Assign(
                     targets=[ast.Subscript(
                         value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
-                        slice=ast.Index(value=ast.Str(s=node.args.kwarg)),
+                        slice=ast.Index(value=ast.Str(s=node.args.kwarg.arg)),
                         ctx=ast.Store()
                     )],
-                    value=ast.Name(id=node.args.kwarg, ctx=ast.Load())
+                    value=ast.Name(id=node.args.kwarg.arg, ctx=ast.Load())
                 ))
 
         # Save functions (not methods) to scope
@@ -209,8 +209,8 @@ class Sandboxer(object):
 
             # Arguments
             for arg in node.args.args:
-                dct.keys.append(ast.Str(s=arg.id))
-                dct.values.append(ast.Name(id=arg.id, ctx=ast.Load()))
+                dct.keys.append(ast.Str(s=arg.arg))
+                dct.values.append(ast.Name(id=arg.arg, ctx=ast.Load()))
 
             # Vararg
             if node.args.vararg is not None:
