@@ -1,5 +1,5 @@
 import ast
-import runtime
+from . import runtime
 import gevent
 
 class Sandboxer(object):
@@ -21,7 +21,7 @@ class Sandboxer(object):
             runtime.fillScope0(scope0)
 
             def run():
-                exec compile(self.parsed, filename=filename, mode="exec") in {"scope0": scope0}
+                exec(compile(self.parsed, filename=filename, mode="exec"), {"scope0": scope0})
             return gevent.spawn(run)
 
         return do
@@ -197,29 +197,6 @@ class Sandboxer(object):
                     value=ast.Name(id=node.name, ctx=ast.Load())
                 )
             ]
-
-        # Print
-        if isinstance(node, ast.Print):
-            true = ast.Name(id="True", ctx=ast.Load())
-            false = ast.Name(id="False", ctx=ast.Load())
-            none = ast.Name(id="None", ctx=ast.Load())
-
-            return ast.Expr(value=ast.Call(
-                func=ast.Subscript(
-                    value=ast.Attribute(
-                        value=ast.Name(id="scope0", ctx=ast.Load()),
-                        attr="inherits",
-                        ctx=ast.Load()
-                    ),
-                    slice=ast.Index(value=ast.Str(s="print")),
-                    ctx=ast.Load()
-                ),
-                args=node.values, keywords=[
-                    ast.keyword(arg="nl", value=true if node.nl else false),
-                    ast.keyword(arg="dest", value=node.dest or none)
-                ],
-                starargs=None, kwargs=None
-            ))
 
         # Add scope to lambdas
         if isinstance(node, ast.Lambda):

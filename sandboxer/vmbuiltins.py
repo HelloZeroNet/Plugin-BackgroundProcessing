@@ -24,14 +24,13 @@ def setBuiltins(scope0):
 
     # print and print()
     def print_(*args, **kwargs):
-        nl = kwargs["nl"]
-        dest = kwargs["dest"]
-        if dest is None:
+        file = kwargs.get("file", None)
+        if file is None:
             # Communication with hosting process
             scope0.io["output"](*args)
         else:
             import builtins
-            getattr(builtins, "print")(*args, end="\n" if nl else "", file=dest)
+            getattr(builtins, "print")(*args, **kwargs)
 
     scope0.inherits["print"] = print_
 

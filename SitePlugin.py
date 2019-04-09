@@ -1,6 +1,6 @@
 from Plugin import PluginManager
-from spawner import Spawner
-import storage
+from .spawner import Spawner
+from . import storage
 
 @PluginManager.registerTo("Site")
 class SitePlugin(object):
@@ -68,6 +68,6 @@ class SitePlugin(object):
 
     # IO
     def backgroundOutput(self, *args):
-        self.log.debug(args)
+        print(*args)
     def backgroundInput(self, *args):
         raise NotImplementedError

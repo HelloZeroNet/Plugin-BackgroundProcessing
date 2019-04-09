@@ -1,9 +1,35 @@
 allowed_classes = [
-    type, int, basestring, bytearray, list, type(None), type(NotImplemented),
-    super, xrange, dict, set, slice, staticmethod, complex, float, buffer, long,
-    frozenset, property, memoryview, tuple, enumerate, reversed, type(Ellipsis),
-    classmethod, type({}.iterkeys()), type({}.iteritems()),
-    type({}.itervalues())
+    # Exceptions
+    ArithmeticError, AssertionError, AttributeError, BaseException,
+    BlockingIOError, BrokenPipeError, BufferError, BytesWarning,
+    ChildProcessError, ConnectionAbortedError, ConnectionError,
+    ConnectionRefusedError, ConnectionResetError, DeprecationWarning, EOFError,
+    EnvironmentError, Exception, FileExistsError, FileNotFoundError,
+    FloatingPointError, FutureWarning, GeneratorExit, IOError, ImportError,
+    ImportWarning, IndentationError, IndexError, InterruptedError,
+    IsADirectoryError, KeyError, KeyboardInterrupt, LookupError, MemoryError,
+    ModuleNotFoundError, NameError, NotADirectoryError, NotImplementedError,
+    OSError, OverflowError, PendingDeprecationWarning, PermissionError,
+    ProcessLookupError, RecursionError, ReferenceError, ResourceWarning,
+    RuntimeError, RuntimeWarning, StopAsyncIteration, StopIteration,
+    SyntaxError, SyntaxWarning, SystemError, SystemExit, TabError, TimeoutError,
+    TypeError, UnboundLocalError, UnicodeDecodeError, UnicodeEncodeError,
+    UnicodeError, UnicodeTranslateError, UnicodeWarning, UserWarning,
+    ValueError, Warning, WindowsError, ZeroDivisionError,
+
+    # Primitives
+    bool, float, int, bytes, str, complex,
+
+    # Objects
+    bytearray, dict, frozenset, list, memoryview, object, set, slice, tuple,
+
+    # Transformations
+    filter, map, enumerate, zip, reversed,
+
+    # Other
+    classmethod, property, range, staticmethod, super, type, type(None),
+    type(NotImplemented), type(Ellipsis), type({}.keys()), type({}.values()),
+    type({}.items())
 ]
 
 
@@ -27,7 +53,7 @@ class Scope(object):
                 if from_ not in self.io["allowed_import"]:
                     raise ImportError("%s is not allowed to be imported" % from_)
 
-                exec compile("from %s import %s as import_module" % (from_, name), "<import>", "single")
+                exec(compile("from %s import %s as import_module" % (from_, name), "<import>", "single"))
             elif name in self.io["modules"]:
                 import_module = self.io["modules"][name](self.io)
                 if hasattr(self.io["modules"][name], "close"):
@@ -36,7 +62,7 @@ class Scope(object):
                 if name not in self.io["allowed_import"]:
                     raise ImportError("%s is not allowed to be imported" % name)
 
-                exec compile("import %s as import_module" % name, "<import>", "single")
+                exec(compile("import %s as import_module" % name, "<import>", "single"))
 
             self[asname] = import_module
             del import_module

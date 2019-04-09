@@ -2,7 +2,7 @@ import gevent
 import logging
 import os
 import importlib
-from sandboxer import Sandboxer
+from .sandboxer import Sandboxer
 
 class Spawner(object):
     def __init__(self, site, io):
@@ -23,7 +23,7 @@ class Spawner(object):
         self.log.debug("Transpiling 0background.%s" % ext)
         try:
             transpiled = transpiler.transpile(code)
-        except Exception, e:
+        except Exception as e:
             self.log.exception("Error transpiling 0background.%s" % ext)
             return False
 
