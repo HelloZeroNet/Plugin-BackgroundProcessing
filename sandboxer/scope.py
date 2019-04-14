@@ -27,7 +27,7 @@ allowed_classes = [
     filter, map, enumerate, zip, reversed,
 
     # Other
-    classmethod, property, range, staticmethod, super, type, type(None),
+    classmethod, property, range, staticmethod, type, type(None),
     type(NotImplemented), type(Ellipsis), type({}.keys()), type({}.values()),
     type({}.items())
 ]

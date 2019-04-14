@@ -1,6 +1,8 @@
 class BuiltinNone(object):
     pass
 
+old_super = super
+
 def setBuiltins(scope0):
     scope0.inherits["help"]        = lambda: None
     scope0.inherits["copyright"]   = lambda: None
@@ -49,5 +51,17 @@ def setBuiltins(scope0):
     def setattr_(obj, name, value):
         scope0.safeAttr(obj)[name] = value
     scope0.inherits["setattr"] = setattr_
+
+    # super
+    def super(*args):
+        if args == []:
+            import sys
+            frame = sys._getframe(1)
+            self_name = frame.f_code.co_varnames[0]  # usually "self"
+            self = frame.f_locals[self_name]
+            return old_super(type(self), self)
+        else:
+            return old_super(*args)
+    scope0.inherits["super"] = super
 
     #arr = ['open', 'compile', '__import__', 'file', 'execfile', 'eval']
