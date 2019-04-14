@@ -102,6 +102,13 @@ def module(io):
 				func(*args, **kwargs)
 			setattr(self, attr_name, handler)
 
+		# A simplier way to call API, e.g.:
+		# ZeroFrame.fileGet("content.json")
+		def __getattr__(self, name):
+			def call(*args, **kwargs):
+				return self.cmd(name, *args, **kwargs)
+			return call
+
 	zeroframe = ZeroFrame()
 	_cache[io["site"].address] = zeroframe
 	return zeroframe
