@@ -12,7 +12,9 @@ class SitePlugin(object):
             "output": self.backgroundOutput,
             "input": self.backgroundInput,
             "readModule": self.readModule,
-            "allowed_import": ("json", "re", "datetime", "base64"),
+            "allowed_import": (
+                "json", "re", "datetime", "base64", "collections", "random"
+            ),
             "modules": storage.modules,
             "site": self,
             "scope0": [],
