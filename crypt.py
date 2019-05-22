@@ -2,6 +2,7 @@ from Crypt import CryptBitcoin
 
 try:
 	from Crypt import Cryptography
+	CryptBitcoin.newSeed = Cryptography.newSeed
 except ImportError:
 	Cryptography = None
 
