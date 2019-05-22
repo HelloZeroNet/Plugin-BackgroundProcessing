@@ -48,12 +48,19 @@ class Scope(object):
             self.io = inherits.io
 
     def import_(self, names, from_, level):
-        if level is not None:
+        if level is not None and level > 0:
             # Import local file
             file_parts = self.filename.split("/")
             if level > len(file_parts):
+                if from_ is None:
+                    from_ = "."
                 raise ImportError("Import of %s outside site root" % from_)
-            new_path = "/".join(file_parts[:-level] + from_.split("."))
+
+            if from_ is None:
+                from_ = []
+            else:
+                from_ = from_.split(".")
+            new_path = "/".join(file_parts[:-level] + from_)
 
             if new_path not in self.io["import_cache"]:
                 # Handle modules
@@ -157,7 +164,7 @@ class Scope(object):
 
     def extend(self, dct):
         scope1 = Scope(self)
-        for name, value in dct.iteritems():
+        for name, value in dct.items():
             scope1[name] = value
         return scope1
 

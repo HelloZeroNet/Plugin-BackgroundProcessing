@@ -54,7 +54,7 @@ def setBuiltins(scope0):
 
     # super
     def super(*args):
-        if args == []:
+        if args == ():
             import sys
             frame = sys._getframe(1)
             self_name = frame.f_code.co_varnames[0]  # usually "self"

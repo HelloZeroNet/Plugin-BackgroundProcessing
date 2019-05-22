@@ -141,6 +141,17 @@ class Sandboxer(object):
                     value=ast.Name(id=arg.arg, ctx=ast.Load())
                 ))
 
+            # Kw-only arguments
+            for arg in node.args.kwonlyargs:
+                node.body.insert(1, ast.Assign(
+                    targets=[ast.Subscript(
+                        value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
+                        slice=ast.Index(value=ast.Str(s=arg.arg)),
+                        ctx=ast.Store()
+                    )],
+                    value=ast.Name(id=arg.arg, ctx=ast.Load())
+                ))
+
             # Vararg
             if node.args.vararg is not None:
                 node.body.insert(1, ast.Assign(
@@ -224,8 +235,14 @@ class Sandboxer(object):
             node.body = ast.Call(
                 func=ast.Lambda(
                     args=ast.arguments(
-                        args=[ast.Name(id="scope%s" % scope, ctx=ast.Load())],
-                        vararg=None, kwarg=None, defaults=[]
+                        args=[
+                            ast.arg(
+                                arg="scope%s" % scope, annotation=None, ctx=ast.Load()
+                            )
+                        ],
+                        kwonlyargs=[],
+                        vararg=None, kwarg=None,
+                        defaults=[], kw_defaults=[]
                     ),
                     body=node.body
                 ),
@@ -242,6 +259,17 @@ class Sandboxer(object):
                 ],
                 keywords=[], starargs=None, kwargs=None
             )
+
+        # Add except handler
+        if isinstance(node, ast.ExceptHandler):
+            node.body.insert(0, ast.Assign(
+                targets=[ast.Subscript(
+                    value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
+                    slice=ast.Index(value=ast.Str(s=node.name)),
+                    ctx=ast.Store()
+                )],
+                value=ast.Name(id=node.name, ctx=ast.Load())
+            ))
 
         # Now do something to prevent object.__subclasses__() hacks and others
         if (
