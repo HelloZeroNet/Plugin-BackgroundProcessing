@@ -33,7 +33,7 @@ class Spawner(object):
         safe_code = sandboxer.toSafe()
 
         self.log.debug("Running 0background.%s" % ext)
-        self.threads.append((ext, gevent.spawn(safe_code)))
+        self.threads.append(gevent.spawn(safe_code))
 
 
     def findTranspiler(self, ext):
@@ -51,15 +51,7 @@ class Spawner(object):
         for scope0 in self.io["scope0"]:
             for f in scope0.to_close:
                 f(self.io)
-        for _, thread in self.threads:
+        for thread in self.threads:
             thread.kill(block=False)
         self.threads = []
         self.io["scope0"] = []
-
-    # Stop by extension
-    def stop(self, ext):
-        new_threads = []
-        for ext1, thread in self.threads:
-            if ext == ext1:
-                thread.kill(block=False)
-        self.threads = [thread for thread in self.threads if thread[0] != ext]
