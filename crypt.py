@@ -1,10 +1,10 @@
 from Crypt import CryptBitcoin
 
 try:
-	from Crypt import Cryptography
-	CryptBitcoin.newSeed = Cryptography.newSeed
+	from Crypt import Crypt
+	CryptBitcoin.newSeed = Crypt.newSeed
 except ImportError:
-	Cryptography = None
+	Crypt = None
 
 
 allowed_names = (
@@ -13,18 +13,18 @@ allowed_names = (
 )
 
 def module(io):
-	class ExtendedCryptography:
+	class ExtendedCrypt:
 		def __init__(self):
 			for name in allowed_names:
-				setattr(self, name, getattr(Cryptography, name))
+				setattr(self, name, getattr(Crypt, name))
 
 	class Crypt:
 		def __init__(self):
 			for name in allowed_names:
 				setattr(self, name, getattr(CryptBitcoin, name))
-			if Cryptography is None:
+			if Crypt is None:
 				self.ex = None
 			else:
-				self.ex = ExtendedCryptography()
+				self.ex = ExtendedCrypt()
 
 	return Crypt()
