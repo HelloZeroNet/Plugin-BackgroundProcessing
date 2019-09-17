@@ -263,13 +263,14 @@ class Sandboxer(object):
         # Add except handler
         if isinstance(node, ast.ExceptHandler):
             if node.name is not None:
+                node.name = "_exc"
                 node.body.insert(0, ast.Assign(
                     targets=[ast.Subscript(
                         value=ast.Name(id="scope%s" % scope, ctx=ast.Load()),
                         slice=ast.Index(value=ast.Str(s=node.name)),
                         ctx=ast.Store()
                     )],
-                    value=ast.Name(id=node.name, ctx=ast.Load())
+                    value=ast.Name(id="_exc", ctx=ast.Load())
                 ))
 
         # Now do something to prevent object.__subclasses__() hacks and others
