@@ -1,10 +1,5 @@
 from Crypt import CryptBitcoin
-
-try:
-	from Crypt import Crypt
-	CryptBitcoin.newSeed = Crypt.newSeed
-except ImportError:
-	Crypt = None
+Crypt = None
 
 
 allowed_names = (
